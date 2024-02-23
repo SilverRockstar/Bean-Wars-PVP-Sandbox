@@ -1,0 +1,125 @@
+[gd_scene load_steps=9 format=3 uid="uid://u1huifxe2sia"]
+
+[ext_resource type="Script" path="res://world.gd" id="1_qvp3i"]
+[ext_resource type="PackedScene" uid="uid://d0432yt8ucrpt" path="res://envioroment.tscn" id="1_rohg5"]
+[ext_resource type="Texture2D" uid="uid://bxpenndhb7bx0" path="res://addons/kenney_particle_pack/circle_05.png" id="3_l8v8s"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_bgpxi"]
+sky_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
+ground_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
+
+[sub_resource type="Sky" id="Sky_gx6un"]
+sky_material = SubResource("ProceduralSkyMaterial_bgpxi")
+
+[sub_resource type="Environment" id="Environment_jielr"]
+background_mode = 2
+sky = SubResource("Sky_gx6un")
+tonemap_mode = 2
+glow_enabled = true
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_dar2a"]
+bg_color = Color(0.721569, 0.188235, 0.184314, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_dhivt"]
+bg_color = Color(0.372549, 0.690196, 0, 1)
+
+[node name="World" type="Node"]
+script = ExtResource("1_qvp3i")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(-0.866025, -0.433013, 0.25, 0, 0.5, 0.866025, -0.5, 0.75, -0.433013, 0, 0, 0)
+shadow_enabled = true
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_jielr")
+
+[node name="Envioroment" parent="." instance=ExtResource("1_rohg5")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.207351, -1, 0)
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="MainMenu" type="PanelContainer" parent="CanvasLayer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 331.0
+offset_top = 229.0
+offset_right = -331.0
+offset_bottom = -228.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="CanvasLayer/MainMenu"]
+layout_mode = 2
+theme_override_constants/margin_left = 15
+theme_override_constants/margin_top = 15
+theme_override_constants/margin_right = 15
+theme_override_constants/margin_bottom = 15
+
+[node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer/MainMenu/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 15
+
+[node name="Label" type="Label" parent="CanvasLayer/MainMenu/MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "Bean Battle Sandbox PVP "
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="HostButton" type="Button" parent="CanvasLayer/MainMenu/MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "Host a Game"
+
+[node name="JoinButton" type="Button" parent="CanvasLayer/MainMenu/MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "Join a Game"
+
+[node name="AddressEntry" type="LineEdit" parent="CanvasLayer/MainMenu/MarginContainer/VBoxContainer"]
+layout_mode = 2
+placeholder_text = "Address Entry to Join"
+alignment = 1
+
+[node name="HUD" type="Control" parent="CanvasLayer"]
+visible = false
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+mouse_filter = 2
+
+[node name="TextureRect" type="TextureRect" parent="CanvasLayer/HUD"]
+layout_mode = 1
+anchors_preset = -1
+anchor_bottom = 1.0
+offset_left = 920.0
+offset_top = 540.0
+offset_right = 1432.0
+offset_bottom = 1012.0
+grow_horizontal = 2
+grow_vertical = 2
+scale = Vector2(0.1, 0.1)
+texture = ExtResource("3_l8v8s")
+stretch_mode = 3
+
+[node name="HealthBar" type="ProgressBar" parent="CanvasLayer/HUD"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 800.0
+offset_right = 1071.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/background = SubResource("StyleBoxFlat_dar2a")
+theme_override_styles/fill = SubResource("StyleBoxFlat_dhivt")
+max_value = 3.0
+value = 3.0
+show_percentage = false
+
+[node name="MultiplayerSpawner" type="MultiplayerSpawner" parent="."]
+_spawnable_scenes = PackedStringArray("res://player.tscn")
+spawn_path = NodePath("..")
+
+[connection signal="pressed" from="CanvasLayer/MainMenu/MarginContainer/VBoxContainer/HostButton" to="." method="_on_host_button_pressed"]
+[connection signal="pressed" from="CanvasLayer/MainMenu/MarginContainer/VBoxContainer/JoinButton" to="." method="_on_join_button_pressed"]
+[connection signal="spawned" from="MultiplayerSpawner" to="." method="_on_multiplayer_spawner_spawned"]
